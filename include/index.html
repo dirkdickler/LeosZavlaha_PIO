@@ -1,0 +1,879 @@
+//tu je link na ikony
+//https://www.angularjswiki.com/fontawesome/weather/
+
+#include <Arduino.h>
+
+    const char zadavaci_html[] = R"rawliteral(
+    <!DOCTYPE HTML>
+    <html>
+
+    <head>
+        <meta charset="utf-8">
+        <title>ESP Input Form</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+    </head>
+
+    <body>
+        <h1>aDum systém IP konfigurácia</h1>
+        <form action="/Nastaveni">
+            IPadresa: <input type="text" value=%s max="16" name="input1"><br><br>
+            Maska: <input type="text" value=%s max="16" name="input2"><br><br>
+            GateWay : <input type="text" value=%s max="16" name="input3"><br><br>
+            Nazev site: <input type="text" value=%s max="16" name="input4"><br><br>
+            Heslo site: <input type="text" value=%s max="16" name="input5"><br><br>
+            <input type="submit" value="Uloz">
+        </form>
+    </body>
+
+    </html>)rawliteral";
+
+    const char LenzobrazIP_html[] = R"rawliteral(
+    <!DOCTYPE HTML>
+    <html>
+
+    <head>
+        <meta charset="utf-8">
+        <title>ESP Input Form</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+    </head>
+
+    <body>
+        <h1>aDum systém IP konfigurácia</h1>
+        <form action="/Nastaveni">
+            IPadresa: <input type="text" value=%s max="30" name="input1"><br><br>
+            Maska: <input type="text" value=%s max="30" name="input2"><br><br>
+            GateWay : <input type="text" value=%s max="30" name="input3"><br><br>
+            Nazev site: <input type="text" value=%s max="30" name="input4"><br>
+        </form>
+    </body>
+
+    </html>
+    )rawliteral";
+
+    const char PageZavlaha[] = R"rawliteral(
+    <!DOCTYPE HTML>
+    <html>
+
+    <head>
+        <meta charset="utf-8">
+        <title>aDum závlaha super zeleneho tráfníku Leonida Kruštefa</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="icon" href="data:,">
+        <link rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.9.0/css/all.css">
+        </link>
+    </head>
+
+    <style>
+        html {
+            font-family: Arial, Helvetica, sans-serif;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 1.8rem;
+            color: white;
+        }
+
+        h2 {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #143642;
+        }
+
+        .topnav {
+            overflow: hidden;
+            background-color: #143642;
+        }
+
+        body {
+            margin: 0;
+        }
+
+        .content {
+            padding: 30px;
+            max-width: 620px;
+            margin: 0 auto;
+        }
+
+        .card {
+            background-color: #F8F7F9;
+            ;
+            box-shadow: 2px 2px 12px 1px rgba(140, 140, 140, .5);
+            padding-top: 10px;
+            padding-bottom: 20px;
+        }
+
+        .button {
+            position: relative;
+            font-size: 23px;
+            text-align: center;
+            outline: none;
+            color: #fff;
+            background-color: #0f8b8d;
+            border: none;
+            border-radius: 7px;
+            width: 90%;
+            height: 110px;
+            transition-duration: 0.4s;
+            overflow: hidden;
+            Cursor: pointer;
+            box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+        }
+
+        .button:after {
+            content: "";
+            background: #f1f1f1;
+            display: block;
+            position: absolute;
+            padding-top: 300%;
+            padding-left: 350%;
+            margin-left: -20px !important;
+            margin-top: -120%;
+            opacity: 0;
+            transition: all 0.8s
+        }
+
+        .button:active:after {
+            padding: 0;
+            margin: 0;
+            opacity: 1;
+            transition: 0s
+        }
+    </style>
+
+    <body>
+
+        <script>
+            var gateway = `ws://${window.location.hostname}/ws`;
+            var websocket;
+            var PocetZon = 7;
+            var x = 2;
+            var a = 4.3;
+            var i, hum = 66;
+            var cnt = 0;
+
+            setInterval(function () {
+                console.log('[setInterval] loop..');
+                websocket.send('VratMiCas');
+                websocket.send('VratVsetkyVentilData');
+            }, 5000);
+
+
+
+
+            window.addEventListener('load', onLoad);
+            function initWebSocket() {
+                console.log('Trying to open a WebSocket connection...');
+                websocket = new WebSocket(gateway);
+                websocket.onopen = onOpen;
+                websocket.onclose = onClose;
+                websocket.onmessage = onMessage;   // <-- add this line
+            }
+            function onOpen(event) {
+                console.log('Connection opened');
+                sleep(100);
+                websocket.send('VratMiCas');   //vypytam si cas
+                websocket.send('VratVsetkyVentilData');
+            }
+            function onClose(event) {
+                console.log('Connection closed');
+                setTimeout(initWebSocket, 2000);
+            }
+
+            function onLoad(event) {
+                console.log('Main Page - funkcia onLoad a nastavuje ');
+                initWebSocket();
+            }
+
+
+
+            //toto sa vykona ked dojde sprava z ESP 
+            function onMessage(event) {
+                var state;
+                var obj = JSON.parse(event.data);
+                console.log("Event data dosli:" + event.data);
+                //if (event.data == "1") { udelaj neco}
+
+                if (obj.RTC != undefined) {
+                    console.log("[onMessage (event)] ESP poslalo RTC: " + obj.RTC);
+                    document.getElementById("ButtonSett_time").innerHTML = obj.RTC;
+                }
+
+                //if (obj.CasOn0 != undefined)
+                //{
+                //	console.log ("[onMessage (event)] ESP poslalo -Cas ON- na ventil a to: " + obj.CasOn);
+                // document.getElementById ("CasOn1").innerHTML = obj.CasOn;
+                //	}
+                if (obj.CasOn0 != undefined) { document.getElementById("CasOn1").innerHTML = obj.CasOn0; }
+                if (obj.CasOn1 != undefined) { document.getElementById("CasOn2").innerHTML = obj.CasOn1; }
+                if (obj.CasOn2 != undefined) { document.getElementById("CasOn3").innerHTML = obj.CasOn2; }
+                if (obj.CasOn3 != undefined) { document.getElementById("CasOn4").innerHTML = obj.CasOn3; }
+                if (obj.CasOn4 != undefined) { document.getElementById("CasOn5").innerHTML = obj.CasOn4; }
+                if (obj.CasOn5 != undefined) { document.getElementById("CasOn6").innerHTML = obj.CasOn5; }
+                if (obj.CasOn6 != undefined) { document.getElementById("CasOn7").innerHTML = obj.CasOn6; }
+
+                if (obj.CasZavlahy0 != undefined) { document.getElementById("CasZavlahy1").innerHTML = obj.CasZavlahy0; }
+                if (obj.CasZavlahy1 != undefined) { document.getElementById("CasZavlahy2").innerHTML = obj.CasZavlahy1; }
+                if (obj.CasZavlahy2 != undefined) { document.getElementById("CasZavlahy3").innerHTML = obj.CasZavlahy2; }
+                if (obj.CasZavlahy3 != undefined) { document.getElementById("CasZavlahy4").innerHTML = obj.CasZavlahy3; }
+                if (obj.CasZavlahy4 != undefined) { document.getElementById("CasZavlahy5").innerHTML = obj.CasZavlahy4; }
+                if (obj.CasZavlahy5 != undefined) { document.getElementById("CasZavlahy6").innerHTML = obj.CasZavlahy5; }
+                if (obj.CasZavlahy6 != undefined) { document.getElementById("CasZavlahy7").innerHTML = obj.CasZavlahy6; }
+
+                if (obj.CasZavlahyRest0 != undefined) { document.getElementById("CasRest1").innerHTML = obj.CasZavlahyRest0 + ' min'; }
+                if (obj.CasZavlahyRest1 != undefined) { document.getElementById("CasRest2").innerHTML = obj.CasZavlahyRest1 + ' min'; }
+                if (obj.CasZavlahyRest2 != undefined) { document.getElementById("CasRest3").innerHTML = obj.CasZavlahyRest2 + ' min'; }
+                if (obj.CasZavlahyRest3 != undefined) { document.getElementById("CasRest4").innerHTML = obj.CasZavlahyRest3 + ' min'; }
+                if (obj.CasZavlahyRest4 != undefined) { document.getElementById("CasRest5").innerHTML = obj.CasZavlahyRest4 + ' min'; }
+                if (obj.CasZavlahyRest5 != undefined) { document.getElementById("CasRest6").innerHTML = obj.CasZavlahyRest5 + ' min'; }
+                if (obj.CasZavlahyRest6 != undefined) { document.getElementById("CasRest7").innerHTML = obj.CasZavlahyRest6 + ' min'; }
+
+                if (obj.SystemONOFF != undefined) {
+                    if (obj.SystemONOFF == true) {
+                        document.getElementById("bt_ON_OFF").innerHTML = 'Vypni závlahu';
+                        console.log('SystemONOFF je true');
+                    }
+                    else {
+                        document.getElementById("bt_ON_OFF").innerHTML = 'Zapni závlahu';
+                        console.log('SystemONOFF je false');
+                    }
+                }
+            }
+
+
+
+            function sleep(milliseconds) {
+                const date = Date.now();
+                let currentDate = null;
+                do {
+                    currentDate = Date.now();
+                } while (currentDate - date < milliseconds);
+            }
+
+
+            function myFunction(rt) {
+                console.log('[myFunction (rt)] Button ma param:' + rt);
+
+                if (rt == 10) { console.log('My func 1 - odosielam OnOFF_Zavlahu'); websocket.send('OnOFF_Zavlahu'); }
+                else if (rt == 1) { window.location.assign("/NastavVentil?ventil=0"); }
+                else if (rt == 2) { window.location.assign("/NastavVentil?ventil=1"); }
+                else if (rt == 3) { window.location.assign("/NastavVentil?ventil=2"); }
+                else if (rt == 4) { window.location.assign("/NastavVentil?ventil=3"); }
+                else if (rt == 5) { window.location.assign("/NastavVentil?ventil=4"); }
+                else if (rt == 6) { window.location.assign("/NastavVentil?ventil=5"); }
+                else if (rt == 7) { window.location.assign("/NastavVentil?ventil=6"); }
+                else if (rt == 22) {
+                    window.location.assign("/NastavVentil?param1=3");
+                    //websocket.send ('ZaluzieZatvorVsetky');
+                }
+
+                else if (rt == 100) { window.location.assign("/"); }
+            }
+        </script>
+
+        <div class="topnav">
+            <h1>aDum systém - závlaha</h1>
+            <p><span id="ButtonSett_time" class="fa fa-clock-o" style="color:white;"> --:--</span></p>
+        </div>
+        <div class="content">
+            <div id="myCard" class="card">
+                <p><button onclick="myFunction(10)" id="bt_ON_OFF" class="button">---</button></p>
+                <p><button onclick="myFunction(1)" id="button0" class="button">Ventil 1 :&nbsp;<span id="CasRest1">--
+                            min</span></p>
+                <p><span id="CasOn1">--.--</span>&nbsp;&nbsp;<span id="CasZavlahy1">--</span> min</button></p>
+                <p><button onclick="myFunction(2)" id="button1" class="button">Ventil 2 :&nbsp;<span id="CasRest2">--
+                            min</span></p>
+                <p><span id="CasOn2">--.--</span>&nbsp;&nbsp;<span id="CasZavlahy2">--</span> min</button></p>
+                <p><button onclick="myFunction(3)" id="button2" class="button">Ventil 3 :&nbsp;<span id="CasRest3">--
+                            min</span></p>
+                <p><span id="CasOn3">--.--</span>&nbsp;&nbsp;<span id="CasZavlahy3">--</span> min</button></p>
+                <p><button onclick="myFunction(4)" id="button2" class="button">Ventil 4 :&nbsp;<span id="CasRest4">--
+                            min</span></p>
+                <p><span id="CasOn4">--.--</span>&nbsp;&nbsp;<span id="CasZavlahy4">--</span> min</button></p>
+                <p><button onclick="myFunction(5)" id="button2" class="button">Ventil 5 :&nbsp;<span id="CasRest5">--
+                            min</span></p>
+                <p><span id="CasOn5">--.--</span>&nbsp;&nbsp;<span id="CasZavlahy5">--</span> min</button></p>
+                <p><button onclick="myFunction(6)" id="button2" class="button">Ventil 6 :&nbsp;<span id="CasRest6">--
+                            min</span></p>
+                <p><span id="CasOn6">--.--</span>&nbsp;&nbsp;<span id="CasZavlahy6">--</span> min</button></p>
+                <p><button onclick="myFunction(7)" id="button2" class="button">Ventil 7 :&nbsp;<span id="CasRest7">--
+                            min</span></p>
+                <p><span id="CasOn7">--.--</span>&nbsp;&nbsp;<span id="CasZavlahy7">--</span> min</button></p>
+
+                <!-- <p><button onclick="myFunction(100)" id="param1" class="button button1">Návrat na hlavní stránku</p><p><i class="fas fa-home"></i></button></p>  -->
+                <!--<p></><input type="number" id="Hood" name="hodnota" style="font-size:35px; width:85px;" value=23 min="-10" max="30000" step="0.1"></p>  -->
+            </div>
+        </div>
+
+
+    </body>
+
+    </html>
+    )rawliteral";
+
+    const char PageNastevVentil[] = R"rawliteral(
+    <!DOCTYPE html>
+    <html lang="en">
+
+    <head>
+        <meta charset="utf-8">
+        <title>aDum závlaha - Nastavenie jednotlivého vetilu</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="icon" href="data:,">
+        <link rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.9.0/css/all.css">
+        </link>
+    </head>
+
+    <style>
+        html {
+            font-family: Arial, Helvetica, sans-serif;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 1.8rem;
+            color: white;
+        }
+
+        h2 {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #143642;
+        }
+
+        .topnav {
+            overflow: hidden;
+            background-color: #143642;
+        }
+
+        body {
+            margin: 0;
+        }
+
+        .content {
+            padding: 30px;
+            max-width: 620px;
+            margin: 0 auto;
+        }
+
+        .card {
+            background-color: #F8F7F9;
+            ;
+            box-shadow: 2px 2px 12px 1px rgba(140, 140, 140, .5);
+            padding-top: 10px;
+            padding-bottom: 20px;
+        }
+
+        .button {
+            position: relative;
+            font-size: 23px;
+            text-align: center;
+            outline: none;
+            color: #fff;
+            background-color: #0f8b8d;
+            border: none;
+            border-radius: 7px;
+            width: 90%;
+            height: 110px;
+            transition-duration: 0.4s;
+            overflow: hidden;
+            Cursor: pointer;
+            box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+        }
+
+        .button:after {
+            content: "";
+            background: #f1f1f1;
+            display: block;
+            position: absolute;
+            padding-top: 300%;
+            padding-left: 350%;
+            margin-left: -20px !important;
+            margin-top: -120%;
+            opacity: 0;
+            transition: all 0.8s
+        }
+
+        .button:active:after {
+            padding: 0;
+            margin: 0;
+            opacity: 1;
+            transition: 0s
+        }
+
+
+        .Timebox {
+            border: 1px solid #CCCCCC;
+            border-radius: 4px;
+            background-color: #FFFFFF;
+            background-image: none;
+            color: #000000;
+            font-family: Arial;
+            font-weight: normal;
+            font-style: normal;
+            font-size: 45px;
+            line-height: 36px;
+            padding: 4px 4px 4px 4px;
+            margin: 0;
+            text-align: center;
+        }
+
+        .Timebox:focus {
+            border-color: #66AFE9;
+            box-shadow: inset 0px 1px 1px rgba(0, 0, 0, 0.075), 0px 0px 8px rgba(102, 175, 233, 0.60);
+            outline: 0;
+        }
+
+        .double {
+            zoom: 3;
+            transform: scale(1);
+            -ms-transform: scale(1);
+            -webkit-transform: scale(1);
+            -o-transform: scale(1);
+            -moz-transform: scale(1);
+            transform-origin: 0 0;
+            -ms-transform-origin: 0 0;
+            -webkit-transform-origin: 0 0;
+            -o-transform-origin: 0 0;
+            -moz-transform-origin: 0 0;
+            padding: 30;
+        }
+    </style>
+
+    <script>
+        var gateway = `ws://${window.location.hostname}/ws`;
+        var websocket;
+        var PocetZon = 7;
+        var x = 2;
+        var a = 4.3;
+        var VentilONTimeVal = 11;
+        var cnt = 0;
+        var VentilJson;
+        VentilJson = { "IDobjektu": "VentilData1", "CasOn": "00:00", "CasZavlahy": 0 };
+        var SystenStususONOFF = false;
+
+        setInterval(function () {
+            console.log('[setInterval] loop..');
+            websocket.send('VratMiCas');
+        }, 50000);
+
+
+
+        window.addEventListener('load', onLoad);
+        function initWebSocket() {
+            console.log('Trying to open a WebSocket connection...');
+            websocket = new WebSocket(gateway);
+            websocket.onopen = onOpen;
+            websocket.onclose = onClose;
+            websocket.onmessage = onMessage;   // <-- add this line
+        }
+        function onOpen(event) {
+            console.log('Connection opened');
+            sleep(100);
+            websocket.send('VratMiCas');   //vypytam si cas
+            websocket.send('VratVentilData');
+
+        }
+        function onClose(event) {
+            console.log('Connection closed');
+            setTimeout(initWebSocket, 2000);
+        }
+
+        function onLoad(event) {
+            console.log('PageNastevVentil - funkcia onLoad a nastavuje ');
+            initWebSocket();
+
+            document.getElementById("VentilONTime").value = VentilJson.CasZavlahy;
+            document.getElementById("ElemTime").value = VentilJson.CasOn;
+        }
+
+        //toto sa vykona ked dojde sprava z ESP 
+        function onMessage(event) {
+            var state;
+            var obj = JSON.parse(event.data);
+            console.log("Event data dosli:" + event.data);
+            //if (event.data == "1") { state = "ON";}
+
+            if (obj.RTC) {
+                console.log("[onMessage (event)] ESP poslalo RTC:" + obj.RTC);
+                document.getElementById("ButtonSett_time").innerHTML = obj.RTC;
+            }
+
+            if (obj.CasOn != undefined) {
+                console.log("[onMessage (event)] ESP poslalo -Cas ON- na ventil a to:" + obj.CasOn);
+                document.getElementById("ElemTime").value = obj.CasOn;
+                VentilJson.CasOn = obj.CasOn;
+            }
+
+            if (obj.CasZavlahy != undefined) {
+                console.log("[onMessage (event)] ESP poslalo - Cas zavlahy a to:" + obj.CasZavlahy);
+                document.getElementById("VentilONTime").value = obj.CasZavlahy;
+                VentilJson.CasZavlahy = obj.CasZavlahy;
+            }
+
+            if (obj.DniVtyzdni != undefined) {
+                console.log("[onMessage (event)] ESP poslalo - Den v tyzdni - obraz:" + obj.DniVtyzdni);
+
+                if (obj.DniVtyzdni & (1 << 0)) { document.getElementById("pondelok").checked = true; }
+                if (obj.DniVtyzdni & (1 << 1)) { document.getElementById("utorok").checked = true; }
+                if (obj.DniVtyzdni & (1 << 2)) { document.getElementById("streda").checked = true; }
+                if (obj.DniVtyzdni & (1 << 3)) { document.getElementById("stvrtok").checked = true; }
+                if (obj.DniVtyzdni & (1 << 4)) { document.getElementById("piatok").checked = true; }
+                if (obj.DniVtyzdni & (1 << 5)) { document.getElementById("sobota").checked = true; }
+                if (obj.DniVtyzdni & (1 << 6)) { document.getElementById("nedela").checked = true; }
+            }
+
+            if (obj.SystemONOFF != undefined) {
+                SystenStususONOFF = obj.SystemONOFF;
+            }
+
+            if (obj.VentilONOFF != undefined) {
+                console.log("[onMessage (event)] ESP poslalo - VentilONOFF a hodnota je:" + obj.VentilONOFF);
+                if (obj.VentilONOFF == 1) {
+                    document.getElementById("bt_Ventil_ONOFF").innerHTML = 'Vypni ventil';
+                }
+                else {
+                    document.getElementById("bt_Ventil_ONOFF").innerHTML = 'Zapni ventil';
+                }
+            }
+        }
+
+
+        function sleep(milliseconds) {
+            const date = Date.now();
+            let currentDate = null;
+            do {
+                currentDate = Date.now();
+            } while (currentDate - date < milliseconds);
+        }
+
+
+        function myFunction(rt) {
+            var honiny = 0;
+            var minuty = 0;
+
+            console.log('Button vola myFuncion a param funkcie je :' + rt);
+
+            if (rt == 1000) {
+                document.getElementById('Hood').value = cnt;
+            }
+            else if (rt == 272) {
+                document.getElementById('button0').innerHTML = rt;
+            }
+
+            else if (rt == 1) {
+                if (SystenStususONOFF == false) {  alert("Závlaha je celkovo vypnutá, tak čo skúšáš!  si ju zapni né?"); }
+                else { 
+                    websocket.send("ToglujVentil");
+                }
+                //websocket.send("ZapniVentil");
+            }
+            else if (rt == 2) {
+                websocket.send("VypniVentil");
+            }
+            else if (rt == 3) {
+                //hodiny = new date(document.getElementById ("ElemTime").value);
+                //LocalTime time = LocalTime.of(hourOfDay, minute, second);
+
+                VentilONTimeVal = document.getElementById("VentilONTime").value;
+                VentilJson.CasOnTime = document.getElementById("VentilONTime").value;
+                console.log('Do JSONobj  VentilJson[CasOnTime] davam :' + VentilJson.CasOnTime);
+
+                VentilJson.CasOn = document.getElementById("ElemTime").value;
+                console.log('Do JSONobj  VentilJson[CasOn] davam :' + VentilJson.CasOn);
+
+                //honiny = document.getElementById ("ElemTime").value;
+                //var CasPrasrovany = honiny.split (":");
+                //console.log ('Vyprstrovane [hod]:' + CasPrasrovany[0]);
+                //console.log ('Vyprstrovane [min]:' + CasPrasrovany[1]);
+
+                if (!VentilONTimeVal && !VentilONTimeVal.value) {
+                    alert("Hodnota -Kolko minut- má nezmysel !!");
+                    return;
+                }
+
+                else if (VentilONTimeVal < 0) {
+                    VentilONTimeVal = 0;
+                    document.getElementById("VentilONTime").value = VentilONTimeVal;
+                    alert("Hodnota -Kolko minut- nesmie byt záporně číslo!!");
+                    return;
+                }
+
+                else if (VentilONTimeVal > 1200) {
+                    VentilONTimeVal = 1200;
+                    document.getElementById("VentilONTime").value = VentilONTimeVal;
+                    alert("Hodnota -Kolko minut- nesmie byt večšie ako 1200 minút tj. 20hodín!!");
+                    return;
+                }
+
+
+                var obrazDni = 0;
+                if (document.getElementById("pondelok").checked == true) { obrazDni = 1; }
+                if (document.getElementById("utorok").checked == true) { obrazDni += 2; }
+                if (document.getElementById("streda").checked == true) { obrazDni += 4; }
+                if (document.getElementById("stvrtok").checked == true) { obrazDni += 8; }
+                if (document.getElementById("piatok").checked == true) { obrazDni += 16; }
+                if (document.getElementById("sobota").checked == true) { obrazDni += 32; }
+                if (document.getElementById("nedela").checked == true) { obrazDni += 64; }
+                VentilJson.DniVtyzdni = obrazDni;
+                console.log('Dobre nevyskocili sme pokracujeme v Html kode');
+                //window.location.assign ("/UlozVentil?Hodina1=" + CasPrasrovany[0] + "&Minuta1=" + CasPrasrovany[1] + "&VentilONTimeVal=" + VentilONTimeVal);
+
+                var jsonString = JSON.stringify(VentilJson);
+                //var sss = "/UlozVentil?" + jsonString + "&" + jsonString; //toto je len ukazka ked chces dva JSON objekty do parametru
+                var sss = "/UlozVentil?" + jsonString;
+                console.log('Do ESP32 posielam toto:' + sss);
+                window.location.assign(sss);
+            }
+
+            else if (rt == 1333) {
+                var jsonString = JSON.stringify(VentilJson);
+                var sss = "/UlozVentil?" + jsonString + "&" + jsonString;
+                console.log('Do ESP32 posielam toto:' + sss);
+                //debugger;
+                window.location.assign(sss);   //"/UlozVentil?IDx=aa&IDy=bb&IDz=cc&ID22=RR" );
+
+                //websocket.send (jsonString);
+            }
+            else if (rt == 100) {
+                window.location.assign("/");
+            }
+        }
+    </script>
+
+    <body>
+        <div class="topnav">
+            <h1>aDum systém - ventil</h1>
+            <p><span id="ButtonSett_time" class="fa fa-clock-o" style="color:white;"> --:--</span></p>
+        </div>
+        <div class="content">
+            <div id="myCard" class="card">
+                <!-- <p class="state">state: <span id="state">%STATE%</span></p> -->
+
+                <p><button onclick="myFunction(1)" id="bt_Ventil_ONOFF" class="button">---</button></p>
+                <!--<p><button onclick="myFunction(1)" id="bt_Ventil_ON" class="button">Zapnúť ventil</button></p>-->
+                <!-- <p><button onclick="myFunction(2)" id="bt_Ventil_OFF" class="button">Vypnúť ventil</button></p>-->
+                <br><br><br>
+                <div style="font-size:25px;">Kedy zapnúť ventil</div>
+                <input type="time" id="ElemTime" class="Timebox" value="01:12">
+
+                <br><br>
+                <div style="font-size:25px;">Kolko minút zavlažovať</div>
+                <input type="number" id="VentilONTime" style="font-size:45px; width:125px;" step="1.0">
+                <div style="font-size:15px;">(0 až 1200 minút)</div>
+                <br><br>
+
+                <label for="horns">Dni v týždni pondelok až nedeľa</label><br>
+                <div class="double">
+                    <input type="checkbox" id="pondelok">
+                    <input type="checkbox" id="utorok">
+                    <input type="checkbox" id="streda">
+                    <input type="checkbox" id="stvrtok">
+                    <input type="checkbox" id="piatok">
+                    <input type="checkbox" id="sobota">
+                    <input type="checkbox" id="nedela">
+                </div>
+                <br><br>
+                <p><button onclick="myFunction(3)" id="button0" class="button">Uložit nastavenie</button></p>
+                <p><button onclick="myFunction(100)" id="param1" class="button">Návrat na predchoziu
+                        stránku</button></p>
+
+            </div>
+        </div>
+    </body>
+
+    </html>
+    )rawliteral";
+
+    const char DebugLog_html[] = R"rawliteral(
+    <!DOCTYPE HTML>
+    <html>
+
+    <head>
+        <meta charset="utf-8">
+        <title>aDum Server</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="icon" href="data:,">
+        <link rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.9.0/css/all.css">
+        </link>
+    </head>
+
+    <style>
+        html {
+            font-family: Arial, Helvetica, sans-serif;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 1.8rem;
+            color: white;
+        }
+
+        h2 {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #143642;
+        }
+
+        .topnav {
+            overflow: hidden;
+            background-color: #143642;
+        }
+
+        body {
+            margin: 0;
+        }
+
+        .content {
+            padding: 5px;
+            max-width: 1150px;
+            margin: 0 auto;
+        }
+
+        .card {
+            background-color: #F8F7F9;
+            ;
+            box-shadow: 2px 2px 12px 1px rgba(140, 140, 140, .5);
+            padding-top: 10px;
+            padding-bottom: 20px;
+        }
+
+        .button {
+            position: relative;
+            font-size: 23px;
+            text-align: center;
+            outline: none;
+            color: #fff;
+            background-color: #0f8b8d;
+            border: none;
+            border-radius: 7px;
+            width: 90%;
+            height: 110px;
+            transition-duration: 0.4s;
+            overflow: hidden;
+            Cursor: pointer;
+            box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+        }
+
+        .button:after {
+            content: "";
+            background: #f1f1f1;
+            display: block;
+            position: absolute;
+            padding-top: 300%;
+            padding-left: 350%;
+            margin-left: -20px !important;
+            margin-top: -120%;
+            opacity: 0;
+            transition: all 0.8s
+        }
+
+        .button:active:after {
+            padding: 0;
+            margin: 0;
+            opacity: 1;
+            transition: 0s
+        }
+    </style>
+
+    <script>
+        var gateway = `ws://${window.location.hostname}/ws`;
+        var websocket;
+        var LogEnable = true;
+
+        setInterval(function () {
+            console.log('Timer loop...');
+        }, 10000);
+
+
+        window.addEventListener('load', onLoad);
+        function initWebSocket() {
+            console.log('Trying to open a WebSocket connection...');
+            websocket = new WebSocket(gateway);
+            websocket.onopen = onOpen;
+            websocket.onclose = onClose;
+            websocket.onmessage = onMessage;   // <-- add this line
+        }
+        function onOpen(event) {
+            console.log('Connection opened');
+            websocket.send('VratMiCas');   //vypytam si cas
+        }
+        function onClose(event) {
+            console.log('Connection closed');
+            setTimeout(initWebSocket, 2000);
+        }
+
+        function onLoad(event) {
+            console.log('PageNastevVentil - funkcia onLoad a nastavuje ');
+            initWebSocket();
+            //document.getElementById("ElemTime").value = VentilJson.CasOn;
+        }
+
+        //toto sa vykona ked dojde sprava z ESP 
+        function onMessage(event) {
+            var state;
+            var obj = JSON.parse(event.data);
+            console.log("Event data dosli:" + event.data);
+
+            //if (event.data == "1") { state = "ON";}
+            if (obj.DebugMsg) {
+                if (LogEnable == true) {
+                    document.getElementById("LogWindow").value += obj.DebugMsg;
+                    logTa = document.getElementById("LogWindow")
+                    logTa.scrollTop = logTa.scrollHeight;
+                }
+            }
+        }
+
+
+        function myFunction(rt) {
+            console.log('Button vola myFuncion a param funkcie je :' + rt);
+
+            if (rt == 1) {
+                document.getElementById("LogWindow").value = "";
+            }
+            else if (rt == 2) {
+                if (LogEnable == false) {
+                    console.log('Log enble davam TRUE');
+                    LogEnable = true;
+                    document.getElementById("LogWindow").value += "[Interna hlaska stranek] Povolujem  vypis logu.....:-)\r\n";
+                }
+                else {
+                    console.log('Log enble davam FALSE');
+                    LogEnable = false;
+                    document.getElementById("LogWindow").value += "[Interna hlaska stranek] Zastavujem vypis logu........!!!!\r\n";
+                }
+            }
+        }
+    </script>
+
+    <body>
+        <div class="topnav">
+            <h1>aDum LOG výpise</h1>
+        </div>
+        <div class="content">
+            <div id="myCard" class="card">
+                <!-- <p class="state">state: <span id="state">%STATE%</span></p> -->
+
+                <textarea id="LogWindow" name="LogWindow" rows="50"
+                    cols="80">Tu sa bude vypispvat debug log texty.</textarea>
+
+
+                <p><button onclick="myFunction(1)" id="ClearText" class="button">Vymaž okno</button></p>
+                <p><button onclick="myFunction(2)" id="Stoplog" class="button">Stop/Start log</button></p>
+                <!-- <p><button onclick="myFunction(272)" id="param1" class="button">Pokoj pro hosty</p><p><i class="fa fa-thermometer-half"></i> 23.5&deg;C &nbsp;<i class="fa fa-tint"></i> 58%</button></p>
+           <p></><input type="number" id="Hood" name="hodnota" style="font-size:35px; width:85px;" value=23 min="-10" max="30000" step="0.1"></p> -->
+            </div>
+        </div>
+
+
+    </body>
+
+    </html>
+    )rawliteral";
