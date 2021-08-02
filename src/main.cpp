@@ -34,7 +34,7 @@ const char *soft_ap_password = "sedykocur";
 //const char *password = "121213765";
 char NazovSiete[30];
 char Heslo[30];
-
+ 
 // Create AsyncWebServer object on port 80
 AsyncWebServer server(80);
 AsyncWebSocket ws("/ws");
