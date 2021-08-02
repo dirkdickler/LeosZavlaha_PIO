@@ -15,7 +15,7 @@
 	  - DBOARD_HAS_PSRAM
 */
 
-#define firmware "ver20210725_1"
+#define firmware "ver20210208_1"
 
 typedef struct
 {

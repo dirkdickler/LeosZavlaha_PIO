@@ -173,7 +173,7 @@
             }
             function onOpen(event) {
                 console.log('Connection opened');
-                sleep(100);
+                sleep(500);
                 websocket.send('VratMiCas');   //vypytam si cas
                 websocket.send('VratVsetkyVentilData');
             }
@@ -473,7 +473,7 @@
         }
         function onOpen(event) {
             console.log('Connection opened');
-            sleep(100);
+            sleep(600);
             websocket.send('VratMiCas');   //vypytam si cas
             websocket.send('VratVentilData');
 

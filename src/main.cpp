@@ -586,7 +586,7 @@ void Loop_10sek(void)
 		u8_t aa = 0;
 		while (WiFi.waitForConnectResult() != WL_CONNECTED && aa < 2)
 		{
-			Serial.print(".");
+			Serial.print("."); 
 			aa++;
 		}
 	}
