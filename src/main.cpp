@@ -603,7 +603,7 @@ void OdosliCasDoWS(void)
 	String jsonString = JSON.stringify(ObjDatumCas);
 	Serial.print("[Func:OdosliCasDoWS] Odosielam strankam ws Cas:");
 	Serial.println(jsonString);
-	ws.textAll(jsonString);
+	ws.textAll(jsonString);  
 }
 
 void DebugMsgToWebSocket(String textik)
@@ -620,7 +620,7 @@ void DebugMsgToWebSocket(String textik)
 void FuncServer_On(void)
 {
 
-	server.on("/",
+	server.on("/", 
 			  HTTP_GET,
 			  [](AsyncWebServerRequest *request)
 			  {
