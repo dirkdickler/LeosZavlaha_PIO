@@ -3,7 +3,7 @@
 #include <AsyncElegantOTA.h> //https://randomnerdtutorials.com/esp32-ota-over-the-air-arduino/#1-basic-elegantota
 #include <elegantWebpage.h>
 
-// Import required librariesrs
+// Import required librariesrs 
 #include <string.h>
 #include <stdlib.h>
 #include <Arduino.h>
@@ -22,7 +22,7 @@
 #include "HelpFunction.h"
 #include <ESP32Time.h>
 //#include <SoftwareSerial.h>
-
+	
 // Replace with your network credentials
 //const char* ssid = "Grabcovi";
 //const char* password = "40177298";
