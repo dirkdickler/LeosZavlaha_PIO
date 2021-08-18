@@ -1136,7 +1136,7 @@ void handle_Nastaveni(AsyncWebServerRequest *request)
 int8_t NacitajEEPROM_setting(void)
 {
 	if (!EEPROM.begin(1000))
-	{
+	{ 
 		Serial.println("Failed to initialise EEPROM");
 		return -1;
 	}
