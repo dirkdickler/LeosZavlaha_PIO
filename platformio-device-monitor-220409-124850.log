@@ -1,0 +1,25 @@
+12:48:50.842 > Spuusm 21.
+12:48:50.844 > 
+12:48:50.844 > *******************************************************************
+12:48:50.850 > ESP Board MAC Address:  30:AE:A4:99:3D:A8
+12:48:50.854 > 
+12:48:50.854 > Hardware info
+12:48:50.855 > 2 cores Wifi /BT/BLE
+12:48:50.857 > 
+12:48:50.857 > Silicon revision: 1
+12:48:50.859 >  4MB external flash
+12:48:50.861 > 
+12:48:50.861 > CPU frekvencia: 240[MHz]   XTAL frek: 40[MHz]
+12:48:50.865 >  
+12:48:50.865 > Total heap: 319480
+12:48:50.867 > Free heap: 293836
+12:48:50.869 > Total PSRAM: 0
+12:48:50.900 > Free PSRAM: 0
+12:48:50.900 > 
+12:48:50.900 > *******************************************************************
+12:48:50.900 > [NacitajEEPROM_setting]Succes to initialise EEPROM
+12:48:50.900 > [NacitajEEPROM_setting] Nacitany nazov siete a heslo z EEPROM: semiart  a aabbccddff
+12:48:50.900 > [NacitajEEPROM_setting] vypis JSONobjektu:
+12:48:50.900 > {"CasOn0":"01:01","CasZavlahy0":11,"CasZavlahyRest0":0,"CasOn1":"02:22","CasZavlahy1":22,"CasZavlahyRest1":0,"CasOn2":"03:33","CasZavlahy2":33,"CasZavlahyRest2":0,"CasOn3":"04:44","CasZavlahy3":44,"CasZavlahyRest3":0,"CasOn4":"05:55","CasZavlahy4":55,"CasZavlahyRest4":0,"CasOn5":"06:16","CasZavlahy5":66,"CasZavlahyRest5":0,"CasOn6":"07:17","CasZavlahy6":77,"CasZavlahyRest6":0}
+12:48:51.047 > Creating Accesspoint- pristupovy bod
+12:48:51.051 > IP address:	192.168.4.1

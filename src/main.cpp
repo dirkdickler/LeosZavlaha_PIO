@@ -21,6 +21,8 @@
 #include "define.h"
 #include "HelpFunction.h"
 #include <ESP32Time.h>
+#include <FS.h>
+#include "Update.h"
 //#include <SoftwareSerial.h>
 	
 // Replace with your network credentials
