@@ -346,7 +346,7 @@ void loop()
 	timer_10sek.update();
 }
 
-void Loop_10ms()
+void Loop_10ms() 
 {
 	static uint8_t TimeOut_RXdata = 0;	 //musi byt static lebo sem skaces z Loop
 	static uint16_t KolkkoNplnenych = 0; //musi byt static lebo sem skaces z Loop

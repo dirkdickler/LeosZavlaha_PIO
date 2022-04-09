@@ -18,7 +18,7 @@
 
 
 #define firmware "ver20220409_1"
-//"ver20220409_1" tu je len UPDATE knihoven ESPAsyncWebServer-esphome @^2.1.0   z  @^1.x.x
+//"ver20220409_1" tu je len UPDATE knihoven ESPAsyncWebServer-esphome @^2.1.0   z  @^1.x.x   a  OTA na 2.2.6
 //"ver20210208_1"  - u LEOSA rok 2021 az do 4/2022 potom davam "ver20220409_1"
 
 typedef struct
